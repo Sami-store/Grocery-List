@@ -1,0 +1,85 @@
+/**
+ * File name: Grocery List
+ * Short description: Read and write a grocery list
+ * @author Samuel Melenciuc
+ * details of the revision: none
+ */
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) throws Exception {   //Throw exception using try catch block in main
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter the number of items"); //Ask the user for the number of items
+        int numItems = in.nextInt();
+        String fileName = "file2.txt"; //Input file name
+        try {
+            String[] items = getItemsArray(numItems); //Using try block to call all the methods
+            writeItems(items, fileName);
+            ArrayList<String> list = readItems(fileName);
+            printList(list);
+        } catch (Exception e) {
+            System.out.println(e.getMessage()); //Exception text
+        }
+    }
+
+    public static String[] getItemsArray(int numItems) throws Exception { //This method will ask the user for items
+        Scanner in = new Scanner(System.in);
+        if (numItems < 0) {
+            throw new Exception("Error, the number was less than 0."); //Error if number is less than 0
+        }
+        String[] items = new String[numItems];
+        for (int i = 0; i < numItems; i++) {
+            System.out.println("Please enter an item:");
+            items[i] = in.nextLine(); //Adding items to array
+        }
+        return items;
+    }
+
+    public static void writeItems(String[] itemsArray, String fileName) throws Exception { //This method prints to a text file
+        try (PrintWriter out = new PrintWriter(fileName)) {
+            for (int i = 0; i < itemsArray.length; i++) {
+                out.println(itemsArray[i]);
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static ArrayList<String> readItems(String fileName) throws Exception { //This method reads from a file
+        ArrayList<String> itemsArrayList = new ArrayList<>();
+        File read = new File(fileName);
+        try (Scanner in = new Scanner(read)) {
+            while (in.hasNextLine()) {
+                itemsArrayList.add(in.nextLine()); //Add the contents into this array
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return itemsArrayList;
+    }
+
+    public static void printList(ArrayList<String> list) { //Print the items from the array list
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println("Items are: " + list.get(i));
+        }
+    }
+}
+/**
+ * Output 1
+ * Please enter the number of items
+ * 2
+ * Please enter an item:
+ * Apple
+ * Please enter an item:
+ * Juice
+ * Items are: Apple
+ * Items are: Juice
+ *
+ *
+ * Please enter the number of items
+ * -2
+ * Error, the number was less than 0.
+ */
